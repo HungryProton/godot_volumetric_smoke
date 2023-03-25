@@ -1,0 +1,109 @@
+[gd_scene load_steps=7 format=3 uid="uid://be7lrv5hhugww"]
+
+[ext_resource type="Script" path="res://playgrounds/playground.gd" id="1_0i14t"]
+[ext_resource type="Texture2D" uid="uid://8p0fbr5wcut8" path="res://playgrounds/assets/sky_2.png" id="2_7elvp"]
+[ext_resource type="Material" uid="uid://ckv2cb4owu1t5" path="res://playgrounds/assets/grid.material" id="3_1jh61"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ttmxl"]
+panorama = ExtResource("2_7elvp")
+
+[sub_resource type="Sky" id="Sky_4v118"]
+sky_material = SubResource("PanoramaSkyMaterial_ttmxl")
+
+[sub_resource type="Environment" id="Environment_7oryg"]
+background_mode = 2
+sky = SubResource("Sky_4v118")
+sky_rotation = Vector3(0, 1.5708, 0)
+ambient_light_sky_contribution = 0.5
+tonemap_mode = 2
+tonemap_exposure = 1.2
+tonemap_white = 2.0
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_use_occlusion = true
+glow_enabled = true
+
+[node name="Playgrounds" type="Node3D"]
+script = ExtResource("1_0i14t")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.540967, -0.375271, 0.75268, 0, 0.894935, 0.446196, -0.841044, 0.241377, -0.48413, 6.66165, 8.06786, -4.32683)
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting"]
+environment = SubResource("Environment_7oryg")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting"]
+transform = Transform3D(-0.040879, -0.407742, 0.912182, 0.0175165, 0.912512, 0.408674, -0.999011, 0.0326845, -0.0301603, 10.2199, 6.92863, 10.8913)
+light_color = Color(0.968627, 0.933333, 0.894118, 1)
+light_energy = 1.2
+shadow_enabled = true
+directional_shadow_split_1 = 0.4
+directional_shadow_split_2 = 0.6
+directional_shadow_split_3 = 0.8
+directional_shadow_max_distance = 80.0
+
+[node name="Floor" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(18.1666, 1, 16.5658)
+material = ExtResource("3_1jh61")
+
+[node name="DoughnutShape" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.67205, 1.34398, 3.72842)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="DoughnutShape"]
+use_collision = true
+radius = 4.71129
+sides = 32
+material = ExtResource("3_1jh61")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="DoughnutShape/CSGCylinder3D"]
+operation = 2
+use_collision = true
+radius = 3.4909
+height = 4.04535
+sides = 32
+material = ExtResource("3_1jh61")
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="DoughnutShape"]
+operation = 2
+use_collision = true
+radius = 1.59757
+sides = 32
+material = ExtResource("3_1jh61")
+
+[node name="Wall" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.76185, 0, 2.40982)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.11559, 0)
+use_collision = true
+size = Vector3(3.04836, 9.91264, 13.4846)
+material = ExtResource("3_1jh61")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Wall/CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1.84547, -0.179195, 0)
+operation = 2
+polygon = PackedVector2Array(-4, 0, -4, 2, -2, 2, 3, 4, 5, 4, 5, 2, 3, 2, -2, 0)
+depth = 3.0
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(0.938656, 0, 0.344856, 0, 1, 0, -0.344856, 0, 0.938656, 0, 0.953675, -4.63276)
+use_collision = true
+size = Vector3(4.45027, 2.72165, 1.59664)
+material = ExtResource("3_1jh61")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.92913, 5.98925, 1.9281)
+light_color = Color(1, 0, 0.764706, 1)
+light_energy = 4.0
+shadow_enabled = true
+omni_range = 5.70179
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.94771, 4.85671, 3.55502)
+light_color = Color(0, 0.784314, 1, 1)
+light_energy = 4.0
+shadow_enabled = true
+omni_range = 5.70179
