@@ -10,6 +10,7 @@ extends Node3D
 # NOTHING in there is optimized yet, this is the most simple brute force approach
 # one could think of.
 
+const VFXScene := preload("res://smoke/vfx/vfx_smoke.tscn")
 
 class Voxel:
 	var pos: Vector3
@@ -30,6 +31,7 @@ class Voxel:
 var _voxels: Array[Voxel] = []
 var _voxel_size_squared: float
 var _physic_state: PhysicsDirectSpaceState3D
+var _vfx_duration := 2.0
 
 
 func _ready():
@@ -85,7 +87,16 @@ func _physics_process(delta):
 		# Update life time
 		voxel.time -= delta
 		if voxel.time <= 0.0:
-			pass
+			_voxels_delete_queue.push_back(voxel)
+
+	# Cleanup dead voxels
+	for voxel_to_delete in _voxels_delete_queue:
+		voxel_to_delete.node.stop_vfx_and_free()
+		_voxels.erase(voxel_to_delete)
+
+	if _voxels.is_empty():
+		set_physics_process(false)
+		_wait_for_vfx_to_complete_and_free()
 
 
 func _create_random_vector() -> Vector3:
@@ -99,7 +110,13 @@ func _create_random_vector() -> Vector3:
 
 
 func _create_voxel_node() -> Node3D:
-	var vfx = preload("res://smoke/vfx/vfx_smoke.tscn").instantiate()
+	var vfx = VFXScene.instantiate()
 	vfx.set_vfx_scale(voxel_size)
+	_vfx_duration = vfx.get_duration()
 	add_child(vfx)
 	return vfx
+
+
+func _wait_for_vfx_to_complete_and_free():
+	await get_tree().create_timer(_vfx_duration * 1.5).timeout
+	queue_free()
