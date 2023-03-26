@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://be7lrv5hhugww"]
+[gd_scene load_steps=13 format=3 uid="uid://be7lrv5hhugww"]
 
 [ext_resource type="Script" path="res://playgrounds/playground.gd" id="1_0i14t"]
 [ext_resource type="Texture2D" uid="uid://8p0fbr5wcut8" path="res://playgrounds/assets/sky_2.png" id="2_7elvp"]
 [ext_resource type="Material" uid="uid://ckv2cb4owu1t5" path="res://playgrounds/assets/grid.material" id="3_1jh61"]
+[ext_resource type="Script" path="res://addons/monitor_overlay/monitor_overlay.gd" id="4_oov3a"]
+[ext_resource type="Texture2D" uid="uid://bmxk4nj55eb2w" path="res://playgrounds/assets/kenney_prototype_texture_light_08.png" id="5_xp3nc"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ttmxl"]
 panorama = ExtResource("2_7elvp")
@@ -23,11 +25,34 @@ ssil_enabled = true
 sdfgi_use_occlusion = true
 glow_enabled = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_baitt"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+albedo_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dq8pd"]
+albedo_color = Color(1, 0.435294, 0, 1)
+albedo_texture = ExtResource("5_xp3nc")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ux3sk"]
+radius = 1.0
+height = 8.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ug7vw"]
+radius = 1.0
+height = 8.0
+
 [node name="Playgrounds" type="Node3D"]
 script = ExtResource("1_0i14t")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-0.540967, -0.375271, 0.75268, 0, 0.894935, 0.446196, -0.841044, 0.241377, -0.48413, 6.66165, 8.06786, -4.32683)
+fov = 70.0
+near = 0.1
+far = 50.0
 
 [node name="Lighting" type="Node3D" parent="."]
 
@@ -61,10 +86,20 @@ material = ExtResource("3_1jh61")
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="DoughnutShape/CSGCylinder3D"]
 operation = 2
 use_collision = true
-radius = 3.4909
+radius = 3.76674
 height = 4.04535
 sides = 32
 material = ExtResource("3_1jh61")
+
+[node name="Transparent cover" type="CSGCylinder3D" parent="DoughnutShape"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30458, 0)
+use_collision = true
+collision_layer = 2
+collision_mask = 3
+radius = 4.71129
+height = 1.07806
+sides = 32
+material = SubResource("StandardMaterial3D_baitt")
 
 [node name="CSGCylinder3D3" type="CSGCylinder3D" parent="DoughnutShape"]
 operation = 2
@@ -83,16 +118,18 @@ size = Vector3(3.04836, 9.91264, 13.4846)
 material = ExtResource("3_1jh61")
 
 [node name="CSGPolygon3D" type="CSGPolygon3D" parent="Wall/CSGBox3D"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1.84547, -0.179195, 0)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 2.56404, -0.179195, 0.343594)
 operation = 2
-polygon = PackedVector2Array(-4, 0, -4, 2, -2, 2, 3, 4, 5, 4, 5, 2, 3, 2, -2, 0)
+polygon = PackedVector2Array(-5, 0, -5, 2, -2, 2, 3, 4, 6, 4, 6, 2, 3, 2, -2, 0)
 depth = 3.0
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(0.938656, 0, 0.344856, 0, 1, 0, -0.344856, 0, 0.938656, 0, 0.953675, -4.63276)
+[node name="TransparentWall" type="CSGBox3D" parent="Wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.01282, 4.11559, 0)
 use_collision = true
-size = Vector3(4.45027, 2.72165, 1.59664)
-material = ExtResource("3_1jh61")
+collision_layer = 2
+collision_mask = 3
+size = Vector3(0.991447, 9.91264, 13.4846)
+material = SubResource("StandardMaterial3D_baitt")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.92913, 5.98925, 1.9281)
@@ -107,3 +144,29 @@ light_color = Color(0, 0.784314, 1, 1)
 light_energy = 4.0
 shadow_enabled = true
 omni_range = 5.70179
+
+[node name="MonitorOverlay" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(300, 0)
+offset_right = 300.0
+offset_bottom = 50.0
+script = ExtResource("4_oov3a")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.65943, 1.5155, -16.9234)
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+angular_damp = 0.5
+constant_torque = Vector3(0, 10, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_dq8pd")
+mesh = SubResource("CapsuleMesh_ux3sk")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_ug7vw")

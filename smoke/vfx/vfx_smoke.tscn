@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bhfn6vr3fsxn3"]
+[gd_scene load_steps=12 format=3 uid="uid://bhfn6vr3fsxn3"]
 
 [ext_resource type="Material" uid="uid://d0amv763xd2a4" path="res://smoke/vfx/smoke_particle.material" id="1_j15gv"]
 [ext_resource type="Script" path="res://smoke/vfx/vfx_smoke.gd" id="2_oerjr"]
@@ -47,6 +47,8 @@ material = ExtResource("1_j15gv")
 size = Vector2(1, 1)
 orientation = 2
 
+[sub_resource type="BoxMesh" id="BoxMesh_qvrml"]
+
 [node name="vfx_smoke" type="GPUParticles3D"]
 amount = 32
 speed_scale = 0.7
@@ -54,3 +56,8 @@ randomness = 1.0
 process_material = SubResource("ParticleProcessMaterial_tn2jo")
 draw_pass_1 = SubResource("PlaneMesh_f4bo1")
 script = ExtResource("2_oerjr")
+
+[node name="DebugCube" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+visible = false
+mesh = SubResource("BoxMesh_qvrml")

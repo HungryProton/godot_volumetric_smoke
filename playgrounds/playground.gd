@@ -17,6 +17,7 @@ func _physics_process(_delta):
 		var mouse_pos = get_viewport().get_mouse_position()
 		ray_query.from = _camera.project_ray_origin(mouse_pos)
 		ray_query.to = ray_query.from + _camera.project_ray_normal(mouse_pos) * 100.0
+		ray_query.collision_mask = 0b1
 		var hit := _physic_state.intersect_ray(ray_query)
 
 		if hit.is_empty():
